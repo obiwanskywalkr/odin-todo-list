@@ -1,0 +1,9 @@
+:root {
+    --primary-dark: black;
+    --primary-light: white;
+    font-size: clamp(1rem, calc(0.5rem + 0.5vw), 1.75rem);
+}
+* {
+    margin: 0;
+    padding: 0;
+}
