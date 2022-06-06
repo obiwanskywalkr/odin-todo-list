@@ -1,9 +1,290 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 :root {
-    --primary-dark: black;
-    --primary-light: white;
+    --primary-dark: #1e293b;
+    --primary-light: #f9fafb;
+    --accent-light: #e5e7eb;
+    --accent-main: #86efac;
+    font-family: "Roboto", sans-serif;
     font-size: clamp(1rem, calc(0.5rem + 0.5vw), 1.75rem);
 }
 * {
     margin: 0;
     padding: 0;
+    color: var(--primary-dark);
+}
+body {
+    background-color: var(--primary-light);
+}
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+h4 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+header {
+    border-bottom: 2px solid var(--accent-light);
+    padding: 2rem 3rem;
+    display: flex;
+    gap: 1rem;
+}
+footer {
+    height: 2rem;
+    border-top: 2px solid var(--accent-light);
+    border-bottom: 1px solid red;
+    padding-top: 0.75rem;
+    text-align: center;
+
+}
+#icon {
+    width: 3.5rem;
+    height: 3.5rem;
+}
+#main {
+    display: grid;
+    grid-template-columns: .25fr 2fr;
+}
+#sidebar {
+    width: 13rem;
+    height: 80vh;
+    padding: 2rem;
+    border-right: 2px solid var(--accent-light);
+    grid-column: 1 / 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+}
+#nav {
+    display: grid;
+    gap: 1.25rem;
+}
+#lists {
+    width: 15rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+.dropdownArrow {
+    cursor: pointer;
+    width: 1.15rem;
+    height: 1.15rem;
+}
+.dropdownArrow:hover {
+    transform: scale(1.2);
+}
+#listContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem
+}
+#content {
+    grid-column: 2 / 3;
+    padding: 2rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+#taskContainer {
+    max-width: 25rem;
+    border: 2px solid var(--accent-light);
+    border-radius: 1rem;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-flow: row;
+    gap: 2rem;
+}
+.borderButton {
+    cursor: pointer;
+    height: 3rem;
+    width: max-content;
+    padding: 0 1.5rem;
+    background-color: var(--accent-main);
+    border: none;
+    border-radius: 1rem;
+    font-size: 1rem;
+   }
+.textButton {
+    cursor: pointer;
+    height: 2rem;
+    background-color: var(--primary-light);
+    border: none;
+    font-size: 1.25rem;
+}
+.borderButton:hover,
+.textButton:hover {
+    transform: scale(1.09);
+}
+.task {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.task > p {
+    margin-top: 3px;
+    font-size: 1.1rem;
+}
+.checkbox {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #FFFFFF;
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-top: 0.25rem;
+    border: 1px solid var(--primary-dark);
+    border-radius: 5px;
+    transform: translateY(-0.075rem);
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+}
+.checkbox::after {
+    content: "";
+    width: 0.65rem;
+    height: 0.65rem;
+    transform: scale(0);
+    transform-origin: bottom left;
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1rem 1rem var(--primary-dark);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+.checkbox:checked::after {
+    transform: scale(1);
+}
+.listsHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.quickAddContainer {
+    display: flex;
+    align-items: flex-end;
+}
+#quickAddTask {
+    border: 0.5px solid var(--accent-light);
+    border-top-left-radius: 1rem;
+    border-bottom-left-radius: 1rem;
+    padding: 0 1rem;
+    height: 3rem;
+    width: 18rem;
+}
+#submitQuickAdd {
+    cursor: pointer;
+    background-color: var(--accent-main);
+    border: none;
+    border-top-right-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    height: 3.2rem;
+    width: 5rem;
+}
+#submitQuickAdd:hover {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+#taskEditor {
+    max-width: 25rem;
+    border: 2px solid var(--accent-light);
+    border-radius: 1rem;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+#editorContainer {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+#priorityContainer {
+    display: flex;
+    gap: 2.5rem;
+}
+.priority {
+    cursor: pointer;
+    width: 5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 5rem;
+    font-size: 0.8rem;
+}
+.important {
+    background-color: khaki;
+}
+.normal {
+    background-color: lightblue;
+}
+.low {
+    background-color: lightgreen;
+}
+#taskDue {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+#dueDate {
+    cursor: pointer;
+    width: 10rem;
+    height: 2rem;
+    padding-left: .5rem;
+    border: 1px solid;
+    border-radius: 0.35rem;
+    background-color: var(--primary-light);
+    font-size: 0.85rem;
+}
+#whichList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+#listDropdown {
+    cursor: pointer;
+    width: 10.5rem;
+    height: 2rem;
+    background-color: var(--primary-light);
+    border-radius: 0.35rem;
+    padding-left: 0.5rem;
+    font-size: 0.85rem;
+}
+#subtasks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+#subtask {
+    margin-left: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+#notes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+#note {
+    width: 20rem;
+    height: 5rem;
+    padding: 0.5rem;
+    border: 1px solid;
+    border-radius: 0.35rem;
+    background-color: var(--primary-light);
+    resize: none;
+}
+#delete {
+    cursor: pointer;
+    background-color: var(--primary-light);
+    border: none;
+    font-size: 1rem;
+    color: red;
 }
