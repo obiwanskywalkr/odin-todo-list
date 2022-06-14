@@ -5,95 +5,54 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
+    <script defer src="./index.js"></script>
     <title>TaskCat - Todo Lists</title>
 </head>
 <body>
 <header>
-    <img id="icon" src="./img/icon-cat.png" alt="TaskCat - By FastCat">
+    <img class="icon" src="./img/icon-cat.png" alt="TaskCat - By FastCat">
     <h1>TaskCat</h1>
 </header>
 <div id="main">
     <div id="sidebar">
-        <button id="createTaskButton" class="borderButton">+ Create a task</button>
-        <div id="nav">
-            <button id="allTasksNav" class="textButton">All tasks</button>
-            <button id="todayNav" class="textButton">Today</button>
-            <button id="thisWeekNav" class="textButton">This week</button>
+        <button id="createTaskButton" class="borderButton"><strong>+</strong> Create a task</button>
+        <div id="taskNav">
+            <button id="allTasksNav" class="textButton" data-nav="All tasks">All tasks</button>
+            <button id="todayNav" class="textButton" data-nav="Today">Today</button>
+            <button id="thisWeekNav" class="textButton" data-nav="This week">This week</button>
         </div>
-        <div id="lists">
-            <div class="listsHeader">
-                <h4>Lists</h4>
-                <img class="dropdownArrow" src="./img/arrow.png">
-            </div>
+        <div id="listNav">
+            <h4>Lists</h4>
             <div id="listContainer">
-                <button class="textButton">Test list 1</button>
-                <button class="textButton">Test list 2</button>
+                <!-- <button class="textButton" data-list="1">Test list</button>
+                <button class="textButton" data-list="2">Test list</button> -->
             </div>
-            <button id="addListButton" class="borderButton">+ Add a list</button>
+            <button id="addListButton" class="borderButton"><strong>+</strong> Add a list</button>
         </div>
-       
     </div>
     <div id="content">
-        <div id="taskContainer">
-            <h2 id="currentList">Current list</h2>
-            <h4 id="listDescription">Optional description</h4>
-            <div class="task">
-                <input type="checkbox" class="checkbox">
-                <p>Test task 1</p>
+        <div id="taskCard">
+            <input type="text" id="currentList" data-title="All tasks" placeholder="All tasks" readonly></input>
+            <div id="taskContainer">
+                <label class="task">Test task
+                    <input type="checkbox" class="checkbox" data-task="1">
+                </label>
+                <label class="task">Test task
+                    <input type="checkbox" class="checkbox" data-task="2">
+                </label>
+                <label class="task">Test task
+                    <input type="checkbox" class="checkbox" data-task="3">
+                </label>
+                <label class="task">Test task
+                    <input type="checkbox" class="checkbox" data-task="4">
+                </label>
+                <label class="task">Test task
+                    <input type="checkbox" class="checkbox" data-task="5">
+                </label>
             </div>
-            <div class="task">
-                <input type="checkbox" class="checkbox">
-                <p>Test task 2</p>
-            </div>
-            <div class="task">
-                <input type="checkbox" class="checkbox">
-                <p>Test task 3</p>
-            </div>
-            <div class="task">
-                <input type="checkbox" class="checkbox">
-                <p>Test task 4</p>
-            </div>
-            <div class="task">
-                <input type="checkbox" class="checkbox">
-                <p>Test task 5</p>
-            </div>
-            <div class="quickAddContainer">
+            <div id="quickAddBar">
                 <input type="text" id="quickAddTask" placeholder="Quick add a task">
-                <button id="submitQuickAdd" type="submit">Add</button>
-            </div>
-        </div>
-        <div id="taskEditor" class="visible">
-            <h2>Task Details</h2>
-            <p id="currentTask">Current Task</p>
-            <div id="editorContainer">
-                <div id="priorityContainer">
-                    <button class="priority important">Important</button>
-                    <button class="priority normal">Normal</button>
-                    <button class="priority low">Low</button>
-                </div>
-                <div id="taskDue">
-                    <p>Due</p>
-                    <input type="date" id="dueDate">
-                </div>
-                <div id="whichList">
-                    <p>List</p>
-                    <select name="listDropdown" id="listDropdown">
-                        <option value="Test list 1">Test list 1</option>
-                        <option value="Test list 2">Test list 2</option>
-                    </select>
-                </div>
-                <div id="subtasks">
-                    <p>Subtasks</p>
-                    <div id="subtask">
-                        <input type="checkbox" name="" id="" class="checkbox">
-                        <p>Add new subtask</p>
-                    </div>
-                </div>
-                <div id="notes">
-                    <p>Notes</p>
-                    <textarea id="note" placeholder="Insert notes here"></textarea>
-                </div>
-                <button id="delete">Delete</button>
+                <button id="submitQuickAdd" type="submit"><strong>+</strong> Add</button>
             </div>
         </div>
     </div>
@@ -101,5 +60,86 @@
 <footer>
     <p>Created by obiwanskywalkr</p>
 </footer>
+<template id="taskCard-template">
+    <input type="text" id="currentList" data-title="Current list" placeholder="Current List"></input>
+    <input type="text" id="listDescription" data-title="Description" placeholder="Description"></input>
+    <div id="taskContainer">
+        <label class="task">Test task
+            <input type="checkbox" class="checkbox" data-task="1">
+        </label>
+        <label class="task">Test task
+            <input type="checkbox" class="checkbox" data-task="2">
+        </label>
+        <label class="task">Test task
+            <input type="checkbox" class="checkbox" data-task="3">
+        </label>
+        <label class="task">Test task
+            <input type="checkbox" class="checkbox" data-task="4">
+        </label>
+        <label class="task">Test task
+            <input type="checkbox" class="checkbox" data-task="5">
+        </label>
+    </div>
+    <div id="quickAddBar">
+        <input type="text" id="quickAddTask" placeholder="Quick add a task">
+        <button id="submitQuickAdd" type="submit"><strong>+</strong> Add</button>
+    </div>
+</template>
+<template id="editorCard-template">
+    <div id="editorCard">
+        <h2>Task Details</h2>
+        <form id="editorForm">
+            <input type="text" id="currentTask" placeholder="Current Task"></input>
+            <div id="priorityContainer">
+                <button id="priorityCritical" class="priority critical">Critical</button>
+                <button id="priorityImportant" class="priority important">Important</button>
+                <button id="priorityLow" class="priority low">Low</button>
+            </div>
+            <div class="editOption">
+                <label for="dueDate">Due</label>
+                <input type="datetime-local" name="dueDate" id="dueDate">
+            </div>
+            <div class="editOption">
+                <label for="listDropdown">List</label>
+                <select id="listDropdown">
+                    <option value="All tasks">All tasks</option>
+                    <option value="Test list">Test list</option>
+                    <option value="Test list">Test list</option>
+                </select>
+            </div>
+            <div class="editOption">
+                <label for="subtaskContainer">Subtasks</label>
+                <div id="subtaskContainer">
+                    <label class="subtask">Subtask
+                        <input type="checkbox" class="checkbox" data-subtask="1">
+                    </label>
+                    <label class="subtask">Subtask
+                        <input type="checkbox" class="checkbox" data-subtask="2">
+                    </label>
+                </div>
+                <button id="createSubtaskButton" class="textButton"><strong>+</strong> Add a subtask</button>
+            </div>
+            <div class="editOption">
+                <label for="notes">Notes</label>
+                <textarea id="notes" placeholder="Insert your notes here"></textarea>
+            </div>
+            <div class="buttonContainer">
+                <button id="deleteTask">Delete Task</button>
+                <button id="submitTask">Submit Task</button>
+            </div>
+        </form>
+    </div>
+</template>
+<template id="task-template">
+    <label class="task">Test task
+        <input type="checkbox" class="checkbox" data-task="">
+    </label>
+</template>
+<template id="subtask-template">
+    <li class="subtask">
+        <input type="checkbox" id="subtask1" class="checkbox">
+        <label for="subtask1">Subtask</label>
+    </li>
+</template>
 </body>
 </html>
