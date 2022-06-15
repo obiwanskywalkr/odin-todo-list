@@ -10,6 +10,7 @@ const taskCardTemplate = document.getElementById('taskCard-template');
 const editorCardTemplate = document.getElementById('editorCard-template');
 
 const taskCard = document.getElementById('taskCard');
+const taskTemplate = document.getElementById('task-template');
 const taskContainer = document.getElementById('taskContainer');
 const quickAddTask = document.getElementById('quickAddTask');
 const submitQuickAdd = document.getElementById('submitQuickAdd');
@@ -26,21 +27,23 @@ const notes = document.getElementById('notes');
 const deleteTask = document.getElementById('deleteTask');
 
 const List = (title, description, listID) => {
+
     const getTitle = () => title;
     const setTitle = (newTitle) => title = newTitle; 
 
     const getDescription = () => description;
     const setDescription = (newDescription) => description = newDescription;
 
-    const getTasks = () => [tasks];
+    const getTasks = () => userTasks;
     const setTasks = () => null;
 
     const getListID = () => listID;
 
-    return { getTitle, setTitle, getDescription, setDescription, getTasks, setTasks, getListID, }
+    return { title, description, listID, getTitle, setTitle, getDescription, setDescription, getTasks, setTasks, getListID, }
 }
 
 const Task = (title, priority, dueDate, list, subtasks, note) => {
+
     const getTitle = () => title;           // Get title from text input
     const setTitle = (newTitle) => title = newTitle;
 
@@ -53,7 +56,7 @@ const Task = (title, priority, dueDate, list, subtasks, note) => {
     const getList = () => list;             // Get list from dropdown selection
     const setList = (targetList) => list = targetList;
 
-    const getSubtasks = () => [...subtasks]    // Get subtask array from subtask creation
+    const getSubtasks = () => [...subtasks];    // Get subtask array from subtask creation
     const setSubtasks = (newSubtask) => subtasks = subtasks.push(newSubtask);
 
     const getNote = () => note;           // Get note from textarea input
@@ -63,28 +66,50 @@ const Task = (title, priority, dueDate, list, subtasks, note) => {
              setTitle, setPriority, setDueDate, setList, setSubtasks, setNote, }
 };
 
+let userLists = [
+    {title: 'Test list 1', description: 'tester', listID: '1'},
+    {title: 'Test list 2', description: 'testee', listID: '2'},
+    {title: 'Test list 3', description: 'tested', listID: '3'},
+]
 
-// let taskArray = [
-//     {title: 'Test task'},
-//     {title: 'Test task'},
-//     {title: 'Test task'},
-// ]
+let userTasks = [
+    {title: 'Test task'},
+    {title: 'Test task'},
+    {title: 'Test task'},
+    {title: 'Test task'},
+    {title: 'Test task'},
+]
 
-const renderTaskEditor = () => {
+const renderAddTask = () => {
     if (content.contains(document.getElementById('editorCard'))) return
     const editorClone = document.importNode(editorCardTemplate.content, true);
-    content.appendChild(editorClone);
+    content.prepend(editorClone);
+
+    const currentTask = document.getElementById('currentTask');
+    currentTask.focus();
 }
 
-createTaskButton.addEventListener('click', renderTaskEditor)
+const renderAddList = () => {
+    initTaskClone();
+
+    currentList.placeholder = 'List title';
+    listDescription.placeholder = 'Description';
+    currentList.focus();
+
+    currentList.addEventListener('change', handleAddList)
+}
+
+const handleAddList = () => {
+    const title = currentList.value;
+    const lastListID = parseInt(listContainer.lastChild.dataset.listId);
+    const newListID = `${lastListID + 1}`;
+    const newList = List(title, '', newListID);
+    userLists.push(newList);
+    displayUserList(userLists);
+}
 
 const renderNavList = (list) => {
-    taskCard.innerHTML = '';
-    const taskClone = document.importNode(taskCardTemplate.content, true);
-    taskCard.appendChild(taskClone);
-
-    const currentList = document.getElementById('currentList');
-    const listDescription = document.getElementById('listDescription')
+    initTaskClone();
 
     currentList.placeholder = list.dataset.nav;
     taskCard.removeChild(listDescription);
@@ -92,52 +117,80 @@ const renderNavList = (list) => {
     if (currentList.dataset.title = list.dataset.title) {
         currentList.setAttribute('readonly', 'readonly');
     }   
+
+    displayTask(userTasks);
 }
 
-navOptions.forEach(option => {
-    option.addEventListener('click', () => {
-        renderNavList(option);
-    })
-})
+const renderUserList = (list) => {
+    initTaskClone();
+    
+    const id = list.dataset.listId;
+    console.log("id: " + id);
+    const activeList = userLists.find( ({ listID }) => listID === id);
+    console.log("active list: " + activeList);
+    
+    currentList.placeholder = activeList.title;
+    listDescription.placeholder = activeList.description;
 
-let userLists = [
-    {title: 'Test list 1', description: 'tester', listID: '1'},
-    {title: 'Test list 2', description: 'testee', listID: '2'},
-    {title: 'Test list 3', description: 'tested', listID: '3'},
-]
+    displayTask(userTasks);
+}
+
+const initTaskClone = () => {
+    taskCard.innerHTML = '';
+    const taskCardClone = document.importNode(taskCardTemplate.content, true);
+    taskCard.appendChild(taskCardClone);
+
+    const currentList = document.getElementById('currentList');
+    const listDescription = document.getElementById('listDescription');
+
+    return { currentList, listDescription }
+}
 
 const displayUserList = (listArray) => {
+    listContainer.innerHTML = '';
     let i = 1
     listArray.forEach(list => {
-        let listItem = document.createElement('button');
+        const listItem = document.createElement('button');
         listContainer.appendChild(listItem);
-        listItem.classList.add('textButton')
+        listItem.classList.add('textButton');
         listItem.textContent = list.title;
-        listItem.dataset.list = i;
-        i++
-    })
-    const lists = document.querySelectorAll('[data-list]');
+        listItem.dataset.listId = i;
+        i++;
+    });
+
+    const lists = document.querySelectorAll('[data-list-id]');
     lists.forEach(list => {
         list.addEventListener('click', () => {
-            renderUserList(list)
-        })
-    })
+            renderUserList(list);
+        });
+    });
 }
 displayUserList(userLists);
 
+const displayTask = (taskArray) => {
+    const taskContainer = document.getElementById('taskContainer');
+    taskContainer.innerHTML = '';
+    let i = 1
+    taskArray.forEach(list => {
+        const label = document.createElement('label');
+        label.textContent = list.title;
+        label.classList.add('task')
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.classList.add('checkbox');
+        input.dataset.task = i;
+        i++;
 
-const renderUserList = (list) => {
-    taskCard.innerHTML = '';
-    const taskClone = document.importNode(taskCardTemplate.content, true);
-    taskCard.appendChild(taskClone);
-
-    const currentList = document.getElementById('currentList');
-    const listDescription = document.getElementById('listDescription')
-    
-    const id = list.dataset.list;
-
-    const temp = userLists.find( ({ listID }) => listID === id);
-    
-    currentList.placeholder = temp.title;
-    listDescription.placeholder = temp.description;
+        label.appendChild(input);
+        taskContainer.appendChild(label);
+    });
 }
+displayTask(userTasks);
+
+createTaskButton.addEventListener('click', renderAddTask);
+addListButton.addEventListener('click', renderAddList);
+navOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        renderNavList(option);
+    });
+});
