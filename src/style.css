@@ -65,6 +65,7 @@ footer {
 
 #sidebar {
     height: auto;
+    max-height: 820px;
     width: 13rem;
     padding: 2rem;
     border-right: 2px solid var(--accent-secondary);
@@ -95,6 +96,7 @@ footer {
 #taskCard {
     max-width: 25rem;
     min-height: 675px;
+    max-height: 750px;
     border: 2px solid var(--accent-secondary);
     border-radius: 1rem;
     padding: 2rem;
@@ -123,7 +125,7 @@ footer {
 #currentList::placeholder,
 #listDescription::placeholder,
 #currentTask::placeholder {
-    color: var(--primary-dark);
+    color: var(--accent-secondary);
 }
 
 #taskContainer {
@@ -237,6 +239,10 @@ footer {
     border: none;
     border-radius: 5rem;
     font-size: 0.8rem;
+}
+/* Applied to priorty button */
+.clicked {
+    transform: scale(1.1);
 }
 
 .priority:hover {

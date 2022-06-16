@@ -32,24 +32,8 @@
     </div>
     <div id="content">
         <div id="taskCard">
-            <input type="text" id="currentList" data-title="All tasks" placeholder="All tasks" readonly></input>
-            <div id="taskContainer">
-                <!-- <label class="task">Test task
-                    <input type="checkbox" class="checkbox" data-task="1">
-                </label>
-                <label class="task">Test task
-                    <input type="checkbox" class="checkbox" data-task="2">
-                </label>
-                <label class="task">Test task
-                    <input type="checkbox" class="checkbox" data-task="3">
-                </label>
-                <label class="task">Test task
-                    <input type="checkbox" class="checkbox" data-task="4">
-                </label>
-                <label class="task">Test task
-                    <input type="checkbox" class="checkbox" data-task="5">
-                </label> -->
-            </div>
+            <input type="text" id="currentList" data-title="All tasks" value="All tasks" readonly></input>
+            <div id="taskContainer"></div>
             <div id="quickAddBar">
                 <input type="text" id="quickAddTask" placeholder="Quick add a task">
                 <button id="submitQuickAdd" type="submit"><strong>+</strong> Add</button>
@@ -60,40 +44,26 @@
 <footer>
     <p>Created by obiwanskywalkr</p>
 </footer>
+
 <template id="taskCard-template">
-    <input type="text" id="currentList" data-title="Current list" placeholder="Current List"></input>
-    <input type="text" id="listDescription" data-title="Description" placeholder="Description"></input>
-    <div id="taskContainer">
-        <!-- <label class="task">Test task
-            <input type="checkbox" class="checkbox" data-task="1">
-        </label>
-        <label class="task">Test task
-            <input type="checkbox" class="checkbox" data-task="2">
-        </label>
-        <label class="task">Test task
-            <input type="checkbox" class="checkbox" data-task="3">
-        </label>
-        <label class="task">Test task
-            <input type="checkbox" class="checkbox" data-task="4">
-        </label>
-        <label class="task">Test task
-            <input type="checkbox" class="checkbox" data-task="5"> -->
-        </label>
-    </div>
+    <input type="text" id="currentList" data-title="Current list"></input>
+    <input type="text" id="listDescription" data-title="Description"></input>
+    <div id="taskContainer"></div>
     <div id="quickAddBar">
         <input type="text" id="quickAddTask" placeholder="Quick add a task">
         <button id="submitQuickAdd" type="submit"><strong>+</strong> Add</button>
     </div>
 </template>
+
 <template id="editorCard-template">
     <div id="editorCard">
         <h2>Task Details</h2>
-        <form id="editorForm">
+        <form id="editorForm" onsubmit="return false">
             <input type="text" id="currentTask" placeholder="Current Task"></input>
             <div id="priorityContainer">
-                <button id="priorityCritical" class="priority critical">Critical</button>
-                <button id="priorityImportant" class="priority important">Important</button>
-                <button id="priorityLow" class="priority low">Low</button>
+                <button id="priorityCritical" class="priority critical" data-value="critical">Critical</button>
+                <button id="priorityImportant" class="priority important" data-value="important">Important</button>
+                <button id="priorityLow" class="priority low" data-value="low">Low</button>
             </div>
             <div class="editOption">
                 <label for="dueDate">Due</label>
@@ -103,9 +73,9 @@
                 <label for="listDropdown">List</label>
                 <select id="listDropdown">
                     <option value="All tasks">All tasks</option>
-                    <option value="Test list">Test list</option>
-                    <option value="Test list">Test list</option>
-                </select>
+                    <option value="Test list 1">Test list 1</option>
+                    <option value="Test list 2">Test list 2</option>
+                    <option value="Test list 3">Test list 3</option>                </select>
             </div>
             <div class="editOption">
                 <label for="subtaskContainer">Subtasks</label>
@@ -130,11 +100,13 @@
         </form>
     </div>
 </template>
+
 <template id="task-template">
     <label class="task">
         <input type="checkbox" class="checkbox" data-task="">
     </label>
 </template>
+
 <template id="subtask-template">
     <li class="subtask">
         <input type="checkbox" id="subtask1" class="checkbox">
