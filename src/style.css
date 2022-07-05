@@ -48,16 +48,11 @@ header {
 footer {
     height: 2rem;
     border-top: 2px solid var(--accent-secondary);
-    border-bottom: 1px solid red;
     padding-top: 0.75rem;
     text-align: center;
 }
 
-.icon {
-    height: 3.5rem;
-    width: 3.5rem;
-}
-
+/* Body styling */
 #main {
     display: grid;
     grid-template-columns: .25fr 2fr;
@@ -76,8 +71,8 @@ footer {
     gap: 2.5rem;
 }
 
-#taskNav,
-#listNav,
+#navLists,
+#userLists,
 #listContainer {
     display: flex;
     flex-direction: column;
@@ -93,10 +88,47 @@ footer {
     gap: 2rem;
 }
 
-#taskCard {
+.borderButton {
+    cursor: pointer;
+    height: 3rem;
+    width: max-content;
+    border: none;
+    border-radius: 1rem;
+    padding: 0 1.5rem;
+    background-color: var(--accent-main);
+    font-size: 1rem;
+    transition: .25s;
+}
+
+.textButton {
+    cursor: pointer;
+    height: 2rem;
+    border: none;
+    background-color: var(--primary-light);
+    font-size: 1.25rem;
+    transition: .25s;
+}
+
+.borderButton:hover,
+.textButton:hover {
+    transform: scale(1.05);
+}
+
+.delete {
+    color: #dc2626;
+    font-size: 1rem;
+}
+
+.submit {
+    font-size: 1rem;
+}
+
+
+/* TaskCard styling */
+
+#taskCardContainer {
     max-width: 25rem;
     min-height: 675px;
-    max-height: 750px;
     border: 2px solid var(--accent-secondary);
     border-radius: 1rem;
     padding: 2rem;
@@ -105,27 +137,24 @@ footer {
     gap: 2rem;
 }
 
-#currentList {
+.listInfo {
     max-width: 20rem;
     border: none;
     background-color: var(--primary-light);
     font-size: 2.5rem;
     font-weight: 700;
-    opacity: 1;
 }
 
 #listDescription {
-    max-width: 20rem;
-    border: none;
-    background-color: var(--primary-light);
     font-size: 1.5rem;
-    font-weight: 700;
 }
 
-#currentList::placeholder,
-#listDescription::placeholder,
-#currentTask::placeholder {
-    color: var(--accent-secondary);
+.buttonContainer {
+    margin-top: auto;
+    width: 25rem;
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
 }
 
 #taskContainer {
@@ -134,11 +163,9 @@ footer {
     gap: 2rem;
 }
 
-.task {
+.taskBox {
     cursor: pointer;
     display: flex;
-    flex-flow: row-reverse;
-    justify-content: flex-end;
     align-items: center;
     gap: 1rem;
 }
@@ -147,9 +174,8 @@ footer {
     -webkit-appearance: none;
     appearance: none;
     cursor: pointer;
-    height: 1.05rem;
-    width: 1.05rem;
-    margin-top: 0.25rem;
+    height: 1.2rem;
+    width: 1.2rem;
     border: 1px solid var(--primary-dark);
     border-radius: 5px;
     background-color: var(--primary-light);
@@ -171,6 +197,22 @@ footer {
 
 .checkbox:checked::after {
     transform: scale(1);
+}
+
+.smaller {
+    width: 1rem;
+    height: 1rem;
+}
+
+.taskText {
+    width: 20rem;
+    overflow: hidden;
+    font-size: 1.25rem;
+    transition: .25s;
+}
+
+.taskText:hover {
+    transform: scale(1.015);
 }
 
 #quickAddBar {
@@ -195,13 +237,16 @@ footer {
     border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
     background-color: var(--accent-main);
+    transition: .25s;
 }
 
 #submitQuickAdd:hover {
     transform: scale(1.05);
 }
 
-#editorCard {
+
+/* EditorCard styling */
+#editorCardContainer {
     cursor: default;
     max-width: 25rem;
     min-height: 675px;
@@ -210,13 +255,13 @@ footer {
     padding: 2rem;
     display: flex;
     flex-direction: column;
-    gap: 2vh;
+    gap: 2rem;
 }
 
 #editorForm {
     display: flex;
     flex-direction: column;
-    gap: 3vh;
+    gap: 2rem;
 }
 
 #currentTask {
@@ -239,14 +284,15 @@ footer {
     border: none;
     border-radius: 5rem;
     font-size: 0.8rem;
-}
-/* Applied to priorty button */
-.clicked {
-    transform: scale(1.1);
+    transition: .25s;
 }
 
 .priority:hover {
-    transform: scale(1.1);
+    transform: scale(1.2);
+}
+
+.clicked {
+    transform: scale(1.2);
 }
 
 .critical {
@@ -277,22 +323,40 @@ footer {
     padding-inline: .5rem;
     background-color: var(--primary-light);
     font-size: 0.85rem;
+    transition: .25s;
 }
 
-.subtask {
+#dueDate:hover,
+#listDropdown:hover {
+    transform: scale(1.015);
+}
+
+#subtaskContainer {
+    margin-top: .25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+}
+
+#createSubtaskButton {
+    margin: 0 0 0 1rem;
+    font-size: 1rem;
+    align-self: flex-start;
+}
+
+.subtaskBox {
     cursor: pointer;
     margin-left: 1rem;
     display: flex;
-    flex-flow: row-reverse;
-    justify-content: flex-end;
     align-items: center;
     gap: 0.5rem;
 }
 
-#createSubtaskButton {
-    margin: .5rem 0 0 1rem;
+.subtaskText {
+    width: 15rem;
+    border: none;
+    background-color: var(--primary-light);
     font-size: 1rem;
-    align-self: flex-start;
 }
 
 #notes {
@@ -303,55 +367,14 @@ footer {
     padding: 0.5rem;
     background-color: var(--primary-light);
     resize: none;
+    transition: .25s;
 }
 
-.buttonContainer {
-    width: 25rem;
-    display: flex;
-    justify-content: center;
-    gap: 4rem;
-}
-
-#deleteTask {
-    cursor: pointer;
-    border: none;
-    background-color: var(--primary-light);
-    font-size: 1rem;
-    color: #dc2626;
-}
-
-#submitTask {
-    cursor: pointer;
-    border: none;
-    background-color: var(--primary-light);
-    font-size: 1rem;
+#notes:hover {
+    transform: scale(1.01) ;
 }
 
 #deleteTask:hover,
 #submitTask:hover {
     transform: scale(1.1);
-}
-
-.borderButton {
-    cursor: pointer;
-    height: 3rem;
-    width: max-content;
-    border: none;
-    border-radius: 1rem;
-    padding: 0 1.5rem;
-    background-color: var(--accent-main);
-    font-size: 1rem;
-}
-
-.textButton {
-    cursor: pointer;
-    height: 2rem;
-    border: none;
-    background-color: var(--primary-light);
-    font-size: 1.25rem;
-}
-
-.borderButton:hover,
-.textButton:hover {
-    transform: scale(1.05);
 }
