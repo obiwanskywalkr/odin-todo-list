@@ -126,7 +126,8 @@ footer {
 
 /* TaskCard styling */
 
-#taskCardContainer {
+#todoCardContainer,
+#listCardContainer {
     max-width: 25rem;
     min-height: 675px;
     border: 2px solid var(--accent-secondary);

@@ -7,7 +7,7 @@
     <title>TaskCat - Todo Lists</title>
     <!-- <link rel="stylesheet" href="./style.css"> -->
     <!-- <script defer src="index-old.js"></script> -->
-</head>
+<link rel="icon" href="favicon.png"><script defer src="runtime.js"></script><script defer src="index.js"></script></head>
 <body>
 <header>
     <div id="iconContainer"></div>
@@ -33,9 +33,9 @@
     <p>Created by obiwanskywalkr</p>
 </footer>
 
-<template id="todoCard-template">
-    <div id="todoCardContainer">
-        <input type="text" id="listTitle" class="listInfo"></input>
+<template id="taskCard-template">
+    <div id="taskCardContainer">
+        <input type="text" id="currentList" class="listInfo"></input>
         <input type="text" id="listDescription" class="listInfo"></input>
         <div id="taskContainer"></div>
         <div id="quickAddBar">
@@ -46,12 +46,12 @@
 </template>
 
 <template id="listCard-template">
-    <div id="listCardContainer">
-        <input type="text" id="listTitle" class="listInfo" placeholder="Title"></input>
+    <div id="taskCardContainer">
+        <input type="text" id="currentList" class="listInfo" placeholder="Title"></input>
         <input type="text" id="listDescription" class="listInfo" placeholder="Description"></input>
         <div id="taskContainer"></div>
         <div class="buttonContainer">
-            <button id="cancel" class="textButton delete">Cancel</button>
+            <button id="deleteList" class="textButton delete">Delete List</button>
             <button id="submitList" class="textButton submit">Submit List</button>
         </div>     
     </div>
@@ -105,6 +105,9 @@
 </template>
 
 <template id="subtask-template">
+    <!-- <label class="subtask">
+        <input type="checkbox" class="checkbox">
+    </label> -->
     <div class="subtaskBox">
         <input type="checkbox" class="checkbox smaller" data-complete="">
         <input type="text" class="subtaskText" placeholder="Subtask" data-subtask>
