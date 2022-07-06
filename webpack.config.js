@@ -15,9 +15,9 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'To-Do List',
+            title: 'TaskCat - Todo Lists',
             template: './src/index.html',
-            // favicon: './src/images/favicon.png'
+            favicon: './src/img/favicon.png'
         }),
     ],
     output: {
