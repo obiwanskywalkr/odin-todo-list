@@ -1,4 +1,4 @@
-import { userLists } from './data';
+import deleteButton from '/src/img/delete.png';
 import { ui } from './ui';
 
 const List = (title, description, tasks, listID) => {
@@ -7,36 +7,49 @@ const List = (title, description, tasks, listID) => {
 }
 
 const lists = () => {
-// x    getters and setters
-// x    lists display controls
-// x    list form controls
-// remove lists
-// check for existing list with same name?? - logic in old index
-// handleForm displays the new list onclick-submit
-
     const display = (listArray) => {
         const listContainer = document.getElementById('listContainer');
         listContainer.innerHTML = '';
 
         listArray.forEach(list => {
-            const listItem = document.createElement('button');
-            listContainer.appendChild(listItem);
-            listItem.classList.add('textButton');
-            listItem.textContent = list.title;
-            listItem.dataset.listId = list.listID;
-            listItem.addEventListener('click', (e) => {
-                ui().renderList(listArray, e);
+            const listTemplate = document.getElementById('list-template');
+            const listClone = document.importNode(listTemplate.content, true);
+            listContainer.appendChild(listClone);
+
+            const lists = Array.from(document.querySelectorAll('[data-list]'));
+            const deleteIcons = Array.from(document.querySelectorAll('[data-delete]'));
+            const index = listArray.indexOf(list);
+
+            lists[index].textContent = list.title;
+            lists[index].dataset.list = list.listID;
+            lists[index].addEventListener('click', (e) => {
+                const activeList = getActiveList(listArray, e);
+                ui().renderUserList(activeList);
+            });
+
+            deleteIcons[index].src = deleteButton;
+            deleteIcons[index].addEventListener('click', (e) => {
+                const activeList = getActiveList(listArray, e);
+                remove(listArray, activeList);
             });
         });
     }
 
-    const handleForm = () => {    
-        const listID = userLists.length + 1;
-        const newList = List(getTitleFromInput(), getDescriptionFromInput(), '', listID);
+    const handleForm = (listArray) => {    
+        const listID = listArray.length + 1;
+        const newList = List(getTitleFromInput(), getDescriptionFromInput(), [], listID);
         
-        userLists.push(newList);
-        console.log(listID);
-        display(userLists);
+        listArray.push(newList);
+        display(listArray);
+
+        return newList
+    }
+
+    const remove = (listArray, list) => {
+        const index = listArray.indexOf(list);
+        listArray.splice(index, 1);
+        resetIDs(listArray);
+        display(listArray);
     }
 
     const getTitleFromInput = () => {
@@ -65,12 +78,29 @@ const lists = () => {
         list.description = description;
     }
 
-    const getActiveList = (e) => {
-        const elementID = parseInt(e.target.dataset.listId);
-        console.log(e);
-        const activeList = userLists.find( ({ listID }) => listID === elementID);
+    const getActiveList = (listArray, e) => {
+        if (e.target.dataset.list === undefined) {
+            const target = e.currentTarget;
+            const sibling = target.previousElementSibling;
 
-        return activeList
+            const elementID = parseInt(sibling.dataset.list);
+            const activeList = listArray.find( ({ listID }) => listID === elementID);
+
+            return activeList
+        } else {
+            const elementID = parseInt(e.target.dataset.list);
+            const activeList = listArray.find( ({ listID }) => listID === elementID);
+            
+            return activeList
+        } 
+    }
+
+    const resetIDs = (listArray) => {
+        let i = 1;
+        listArray.forEach(list => {
+            list.listID = i;
+            i++;
+        });
     }
 
     return { display, handleForm, updateTitle, updateDescription, getActiveList }

@@ -80,6 +80,15 @@ footer {
     gap: 1.25rem;
 }
 
+.listBox {
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 #content {
     padding: 2rem 7rem;
     grid-column: 2 / 3;
@@ -109,9 +118,19 @@ footer {
     transition: .25s;
 }
 
+.imageButton {
+    height: 1.5rem;
+    width: 1.5rem;
+    transition: .25s;
+}
+
 .borderButton:hover,
 .textButton:hover {
     transform: scale(1.05);
+}
+
+.imageButton:hover {
+    transform: scale(1.25);
 }
 
 .delete {
