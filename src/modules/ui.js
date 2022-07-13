@@ -3,39 +3,14 @@ import icon from '/src/img/icon-cat.png';
 import { lists } from "./list.js";
 import { tasks } from "./task.js";
 import { editor } from "./editor.js"
-import { userLists, navLists, userTasks } from "./data.js";
+import { userLists, navLists } from "./data.js";
 
 const ui = () => {
-// x    initialize templates 
-// x    render controls
-// x    event listener controls
-// x    reset event listeners
-// refactor render list
-
-    const loadPage = () => {
-        const navOptions = Array.from(document.querySelectorAll('[data-navOption'));
-        const event = new CustomEvent('click', {detail: navOptions[0].dataset.nav});
-        
-        navOptions[0].addEventListener('click', (e) => {
-            renderList(navLists, e);
-        });
-        
-        navOptions[0].dispatchEvent(event);
-    
-        lists().display(userLists);
-    }
-
-    const loadIcon = () => {
-        const iconContainer = document.getElementById('iconContainer');
-        const taskCatIcon = new Image(60, 60);
-        taskCatIcon.src = icon;
-        iconContainer.appendChild(taskCatIcon);
-    }
-
     const initListClone = () => {
         if (content.contains(document.getElementById('listCardContainer'))) {
             document.getElementById('listCardContainer').remove();
         }
+
         if (content.contains(document.getElementById('todoCardContainer'))) {
             document.getElementById('todoCardContainer').remove();
         }
@@ -54,17 +29,25 @@ const ui = () => {
     }
 
     const addListListeners = () => {
-        const cancel = document.getElementById('cancel');
+        const cancelLlist = document.getElementById('cancelList');
         const submitList = document.getElementById('submitList');
 
-        cancel.addEventListener('click', loadPage);
-        submitList.addEventListener('click', lists().handleForm);
+        cancelLlist.addEventListener('click', () => {
+            initTodoClone();
+            renderNavOption('All tasks')
+        });
+        
+        submitList.addEventListener('click', () => {
+            const newList = lists().handleForm(userLists);
+            renderUserList(newList);
+        });
     }
 
     const initTodoClone = () => {
         if (content.contains(document.getElementById('todoCardContainer'))) {
             document.getElementById('todoCardContainer').remove();
         }
+
         if (content.contains(document.getElementById('listCardContainer'))) {
             document.getElementById('listCardContainer').remove();
         }
@@ -81,8 +64,33 @@ const ui = () => {
         return { todoCardContainer, listTitle, listDescription, submitQuickAdd }
     }
 
+    const addTitleListeners = () => {
+        listTitle.addEventListener('focus', () => {
+            setPlaceholder(listTitle);
+        }, { once: true });
+
+        listTitle.addEventListener('focusout', (e) => {
+            const activeList = lists().getActiveList(userLists, e);
+            lists().updateTitle(activeList);
+            lists().display(userLists);
+        });
+    }
+
+    const addDescriptionListeners = () => {
+        listDescription.addEventListener('focus', () => {
+            setPlaceholder(listDescription);
+        }, { once: true });
+
+        listDescription.addEventListener('focusout', (e) => {
+            const activeList = lists().getActiveList(userLists, e);
+            lists().updateDescription(activeList);
+        });
+    }
+
     const initEditorClone = () => {
-        if (content.contains(document.getElementById('editorCardContainer'))) return
+        if (content.contains(document.getElementById('editorCardContainer'))) {
+            document.getElementById('editorCardContainer').remove();
+        }
 
         const editorCardTemplate = document.getElementById('editorCard-template');
         const editorClone = document.importNode(editorCardTemplate.content, true);
@@ -96,6 +104,7 @@ const ui = () => {
         const notes = document.getElementById('notes');
 
         currentTask.focus();
+        editor().initListDropdown(userLists);
         addEditorListeners();
 
         return { editorForm, currentTask, dueDate, listDropdown, subtaskContainer, notes }
@@ -105,14 +114,7 @@ const ui = () => {
         const priorities = Array.from(document.querySelectorAll('[data-priority]'));
         const createSubtaskButton = document.getElementById('createSubtaskButton');
         const submitTask = document.getElementById('submitTask');
-
-        const removeClickedClass = () => {
-            priorities.forEach(priority => {
-                if (priority.classList.contains('clicked')) {
-                    priority.classList.remove('clicked');
-                }
-            });
-        }
+        const cancelEditor = document.getElementById('cancelEditor');
 
         priorities.forEach(priority => {
             priority.addEventListener('click', (e) => {
@@ -121,72 +123,76 @@ const ui = () => {
             });
         });
 
-        createSubtaskButton.addEventListener('click', editor().handleSubtask);
+        createSubtaskButton.addEventListener('click', (e) => {
+            const activeTask = tasks().getActiveTask(navLists[0].tasks, e);
+            editor().handleSubtask(activeTask);
+        });
 
         submitTask.addEventListener('click', () => {
             editor().handleForm();
-            tasks().display(userTasks);
+            tasks().display(navLists[0].tasks);
             content.removeChild(editorCardContainer);
+        });
+
+        cancelEditor.addEventListener('click', (e) => {
+            content.removeChild(editorCardContainer);
+        })
+    }
+
+    const renderNavOption = (navOption) => {
+        initTodoClone();
+
+        listTitle.value = navOption;
+        listTitle.setAttribute('readonly', 'readonly'); 
+    
+        todoCardContainer.removeChild(listDescription);
+
+        tasks().display(navLists[0].tasks); 
+        submitQuickAdd.addEventListener('click', (e) => {
+            tasks().handleQuickAdd(navLists[0].tasks, e)
         });
     }
 
-    const renderList = (listArray, e) => {
+    const renderUserList = (listArray) => {
         initTodoClone();
 
-        const addTitleListeners = () => {
-            listTitle.addEventListener('focus', () => {
-                setPlaceholder(listTitle);
-            }, { once: true });
-
-            listTitle.addEventListener('focusout', (e) => {
-                const activeList = lists().getActiveList(e);
-                lists().updateTitle(activeList);
-                lists().display(listArray);
-            });
-        }
-
-        const addDescriptionListeners = () => {
-            listDescription.addEventListener('focus', () => {
-                setPlaceholder(listDescription);
-            }, { once: true });
-
-            listDescription.addEventListener('focusout', (e) => {
-                const activeList = lists().getActiveList(e);
-                lists().updateDescription(activeList);
-            });
-        }
+        listTitle.value = listArray.title;
+        listTitle.dataset.list = listArray.listID;
+        addTitleListeners();
         
-        if (listArray.some( ({ title }) => 
-        title === 'All tasks' || title === 'Today' || title === 'This week')) {
-            listTitle.value = e.target.dataset.navoption;
-            listTitle.setAttribute('readonly', 'readonly'); 
-        
+        if (listArray.description === '') {
             todoCardContainer.removeChild(listDescription);
-
-            tasks().display(userTasks); 
-            submitQuickAdd.addEventListener('click', tasks().handleQuickAdd);
         } else {
-            const activeList = lists().getActiveList(e);
-            console.log(activeList);
+            listDescription.value = listArray.description;
+            listDescription.dataset.list = listArray.listID;
+            addDescriptionListeners();
+        }
 
-            listTitle.value = activeList.title;
-            listTitle.dataset.listId = activeList.listID;
-            addTitleListeners();
-            
-            if (activeList.description === '') {
-                todoCardContainer.removeChild(listDescription);
-            } else {
-                listDescription.value = activeList.description;
-                listDescription.dataset.listId = activeList.listID;
-                addDescriptionListeners();
-            }
+        if (listArray.tasks === '') { 
+            submitQuickAdd.addEventListener('click', (e) => {
+                tasks().handleQuickAdd(listArray, e);
+            });
+        } else {
+            tasks().display(listArray.tasks); 
 
-            tasks().display(userTasks); 
-            submitQuickAdd.addEventListener('click', tasks().handleQuickAdd);
+            submitQuickAdd.addEventListener('click', (e) => {
+                tasks().handleQuickAdd(listArray, e);
+            });
         }
     }
 
-    const addPageListeners = (() => {
+    const initPage = () => {
+        const iconContainer = document.getElementById('iconContainer');
+        const taskCatIcon = new Image(60, 60);
+        taskCatIcon.src = icon;
+        iconContainer.appendChild(taskCatIcon);
+
+       renderNavOption('All tasks');
+       lists().display(userLists);
+       addPageListeners();
+    }
+
+    const addPageListeners = () => {
         const createTaskButton = document.getElementById('createTaskButton');
         const addListButton = document.getElementById('addListButton');
         const navOptions = document.querySelectorAll('[data-navOption]');
@@ -194,18 +200,29 @@ const ui = () => {
         createTaskButton.addEventListener('click', initEditorClone);
         addListButton.addEventListener('click', initListClone);
         navOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
-                renderList(navLists, e);
+            option.addEventListener('click', () => {
+                const navOption = (navLists.find( ({title}) => title === option.dataset.navoption)).title;
+                renderNavOption(navOption);
             });
         }); 
-    })();
+    }
 
     const setPlaceholder = (element) => {
         element.placeholder = element.value;
         element.value = '';
     }
 
-    return { loadPage, loadIcon, initEditorClone, renderList, setPlaceholder, }
+    const removeClickedClass = () => {
+        const priorities = Array.from(document.querySelectorAll('[data-priority]'));
+
+        priorities.forEach(priority => {
+            if (priority.classList.contains('clicked')) {
+                priority.classList.remove('clicked');
+            }
+        });
+    }
+
+    return { initPage, initEditorClone, renderUserList, setPlaceholder, }
 }
 
 export { ui }

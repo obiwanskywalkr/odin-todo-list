@@ -1,25 +1,49 @@
-const userLists = [
-    {title: 'Test list 1', description: 'tester', listID: 1},
-    {title: 'Test list 2', description: 'testee', listID: 2},
-    {title: 'Test list 3', description: 'tested', listID: 3},
-]
-
 const navLists = [
-    {title: 'All tasks'},
-    {title: 'Today'},
-    {title: 'This week'},
+    {title: 'All tasks',
+    description: '',
+    tasks: [{title: 'Critical task', priority: 'critical', dueDate: '2022-10-22T16:20', list: 'Test list 1', subtasks: [{title: 'foo', subtask: 1}, {title: 'bar', subtask: 2}], notes: 'foobar', completed: 'false', taskID: 1},
+            {title: 'Important task', priority: 'important', dueDate: '2022-10-22T16:20', list: 'Test list 2', subtasks: [{title: 'foo!', subtask: 1}], notes: 'bar!', completed: 'false', taskID: 2},
+            {title: 'Regular task', priority: 'low', dueDate: '2022-10-22T16:20', list: 'Test list 3', subtasks: [{title: 'foo?', subtask: 1}], notes: 'bar?', completed: 'false', taskID: 3}],
+    listID: ''},
+    
+    {title: 'Today',
+    description: '',
+    tasks: [],
+    listID: ''},
+
+    {title: 'This week',
+    description: '',
+    tasks: [],
+    listID: ''}
 ]
 
-const userTasks = [
-    {title: 'Test task', priority: '', dueDate: '', list: '', subtasks: '', note: '', completed: 'false', taskID: 1},
-    {title: 'Test task', priority: '', dueDate: '', list: '', subtasks: '', note: '', completed: 'false', taskID: 2},
-    {title: 'Test task', priority: '', dueDate: '', list: '', subtasks: '', note: '', completed: 'false', taskID: 3},
-    {title: 'Test task', priority: '', dueDate: '', list: '', subtasks: '', note: '', completed: 'false', taskID: 4},
-    {title: 'Test task', priority: 'low', dueDate: '2022-07-04T03:50', list: 'Test list 2', subtasks: [{title: 'Test subtask', taskID: 5, subtask: 1}], note: 'hello', completed: 'false', taskID: 5},
+const userLists = [
+    {title: 'List 1', 
+    description: 'foobar', 
+    tasks: [{title: 'Critical task', priority: 'critical', dueDate: '2022-10-22T16:20', list: 'Test list 1', subtasks: [{title: 'foo', subtask: 1}], notes: 'bar', completed: 'false', taskID: 1}], 
+    listID: 1},
+
+    {title: 'List 2', 
+    description: 'foobar!', 
+    tasks: [{title: 'Important task', priority: 'important', dueDate: '2022-10-22T16:20', list: 'Test list 2', subtasks: [{title: 'foo!', subtask: 1}], notes: 'bar!', completed: 'false', taskID: 2}], 
+    listID: 2},
+    
+    {title: 'List 3', 
+    description: 'foobar?', 
+    tasks: [{title: 'Regular task', priority: 'low', dueDate: '2022-10-22T16:20', list: 'Test list 3', subtasks: [{title: 'foo?', subtask: 1}], notes: 'bar?', completed: 'false', taskID: 3}], 
+    listID: 3},
 ]
 
-const userSubtasks = [
-    {title: 'Test subtask', taskID: '5', subtask: 1},
-]
+const getAllTasks = () => {
 
-export { userLists, navLists, userTasks, userSubtasks }
+}
+
+const getTodayTasks = () => {
+
+}
+
+const getWeekTasks = () => {
+    
+}
+
+export { userLists, navLists, }
