@@ -33,9 +33,9 @@
     <p>Created by obiwanskywalkr</p>
 </footer>
 
-<template id="taskCard-template">
-    <div id="taskCardContainer">
-        <input type="text" id="currentList" class="listInfo"></input>
+<template id="todoCard-template">
+    <div id="todoCardContainer">
+        <input type="text" id="listTitle" class="listInfo"></input>
         <input type="text" id="listDescription" class="listInfo"></input>
         <div id="taskContainer"></div>
         <div id="quickAddBar">
@@ -46,12 +46,12 @@
 </template>
 
 <template id="listCard-template">
-    <div id="taskCardContainer">
-        <input type="text" id="currentList" class="listInfo" placeholder="Title"></input>
+    <div id="listCardContainer">
+        <input type="text" id="listTitle" class="listInfo" placeholder="Title"></input>
         <input type="text" id="listDescription" class="listInfo" placeholder="Description"></input>
         <div id="taskContainer"></div>
         <div class="buttonContainer">
-            <button id="deleteList" class="textButton delete">Delete List</button>
+            <button id="cancelList" class="textButton delete">Cancel</button>
             <button id="submitList" class="textButton submit">Submit List</button>
         </div>     
     </div>
@@ -61,7 +61,7 @@
     <div id="editorCardContainer">
         <h2>Task Details</h2>
         <form id="editorForm" onsubmit="return false">
-            <input type="text" id="currentTask" placeholder="Current Task"></input>
+            <input type="text" id="currentTask"></input>
             <div id="priorityContainer">
                 <button class="priority critical" data-priority="critical">Critical</button>
                 <button class="priority important" data-priority="important">Important</button>
@@ -73,12 +73,7 @@
             </div>
             <div class="editOption">
                 <label for="listDropdown">List</label>
-                <select id="listDropdown">
-                    <option value="All tasks">All tasks</option>
-                    <option value="Test list 1">Test list 1</option>
-                    <option value="Test list 2">Test list 2</option>
-                    <option value="Test list 3">Test list 3</option>
-               </select>
+                <select id="listDropdown"></select>
             </div>
             <div class="editOption">
                 <label for="subtaskContainer">Subtasks</label>
@@ -91,9 +86,16 @@
             </div>
         </form>
         <div class="buttonContainer">
-            <button id="deleteTask" class="textButton delete">Delete Task</button>
+            <button id="cancelEditor" class="textButton delete">Cancel</button>
             <button id="submitTask" class="textButton submit">Submit Task</button>
         </div>
+    </div>
+</template>
+
+<template id="list-template">
+    <div class="listBox">
+        <button class="textButton" data-list></button>
+        <img class="imageButton" data-delete>
     </div>
 </template>
 
@@ -105,9 +107,6 @@
 </template>
 
 <template id="subtask-template">
-    <!-- <label class="subtask">
-        <input type="checkbox" class="checkbox">
-    </label> -->
     <div class="subtaskBox">
         <input type="checkbox" class="checkbox smaller" data-complete="">
         <input type="text" class="subtaskText" placeholder="Subtask" data-subtask>
