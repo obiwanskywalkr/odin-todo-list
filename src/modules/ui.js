@@ -3,7 +3,7 @@ import icon from '/src/img/icon-cat.png';
 import { lists } from "./list.js";
 import { tasks } from "./task.js";
 import { editor } from "./editor.js"
-import { userLists, navLists } from "./data.js";
+import { userLists, allTasks } from "./data.js";
 
 const ui = () => {
     const initListClone = () => {
@@ -29,16 +29,17 @@ const ui = () => {
     }
 
     const addListListeners = () => {
-        const cancelLlist = document.getElementById('cancelList');
+        const cancelList = document.getElementById('cancelList');
         const submitList = document.getElementById('submitList');
 
-        cancelLlist.addEventListener('click', () => {
+        cancelList.addEventListener('click', () => {
             initTodoClone();
             renderNavOption('All tasks')
         });
         
         submitList.addEventListener('click', () => {
             const newList = lists().handleForm(userLists);
+            lists().display(userLists);
             renderUserList(newList);
         });
     }
@@ -69,8 +70,8 @@ const ui = () => {
             setPlaceholder(listTitle);
         }, { once: true });
 
-        listTitle.addEventListener('focusout', (e) => {
-            const activeList = lists().getActiveList(userLists, e);
+        listTitle.addEventListener('focusout', () => {
+            const activeList = lists().getActiveList();
             lists().updateTitle(activeList);
             lists().display(userLists);
         });
@@ -81,8 +82,8 @@ const ui = () => {
             setPlaceholder(listDescription);
         }, { once: true });
 
-        listDescription.addEventListener('focusout', (e) => {
-            const activeList = lists().getActiveList(userLists, e);
+        listDescription.addEventListener('focusout', () => {
+            const activeList = lists().getActiveList();
             lists().updateDescription(activeList);
         });
     }
@@ -103,10 +104,10 @@ const ui = () => {
         const subtaskContainer = document.getElementById('subtaskContainer');
         const notes = document.getElementById('notes');
 
-        currentTask.focus();
         editor().initListDropdown(userLists);
         addEditorListeners();
-
+        currentTask.focus();
+        
         return { editorForm, currentTask, dueDate, listDropdown, subtaskContainer, notes }
     }
 
@@ -124,13 +125,12 @@ const ui = () => {
         });
 
         createSubtaskButton.addEventListener('click', (e) => {
-            const activeTask = tasks().getActiveTask(navLists[0].tasks, e);
+            const activeTask = tasks().getActiveTask(allTasks, e);
             editor().handleSubtask(activeTask);
         });
 
         submitTask.addEventListener('click', () => {
             editor().handleForm();
-            tasks().display(navLists[0].tasks);
             content.removeChild(editorCardContainer);
         });
 
@@ -139,44 +139,42 @@ const ui = () => {
         })
     }
 
-    const renderNavOption = (navOption) => {
+    const renderNavOption = (title) => {
         initTodoClone();
 
-        listTitle.value = navOption;
+        listTitle.value = title;
         listTitle.setAttribute('readonly', 'readonly'); 
     
         todoCardContainer.removeChild(listDescription);
 
-        tasks().display(navLists[0].tasks); 
-        submitQuickAdd.addEventListener('click', (e) => {
-            tasks().handleQuickAdd(navLists[0].tasks, e)
+        submitQuickAdd.addEventListener('click', () => {
+            tasks().handleQuickAdd(allTasks)
         });
     }
 
-    const renderUserList = (listArray) => {
+    const renderUserList = (list) => {
         initTodoClone();
 
-        listTitle.value = listArray.title;
-        listTitle.dataset.list = listArray.listID;
+        listTitle.value = list.title;
+        listTitle.dataset.list = list.listID;
         addTitleListeners();
         
-        if (listArray.description === '') {
+        if (list.description === '') {
             todoCardContainer.removeChild(listDescription);
         } else {
-            listDescription.value = listArray.description;
-            listDescription.dataset.list = listArray.listID;
+            listDescription.value = list.description;
             addDescriptionListeners();
         }
 
-        if (listArray.tasks === '') { 
-            submitQuickAdd.addEventListener('click', (e) => {
-                tasks().handleQuickAdd(listArray, e);
+        if (list.tasks === '') { 
+            submitQuickAdd.addEventListener('click', () => {
+                tasks().handleQuickAdd(list);
             });
         } else {
-            tasks().display(listArray.tasks); 
+            tasks().display(list.tasks); 
 
-            submitQuickAdd.addEventListener('click', (e) => {
-                tasks().handleQuickAdd(listArray, e);
+            submitQuickAdd.addEventListener('click', () => {
+                tasks().handleQuickAdd(list);
             });
         }
     }
@@ -187,24 +185,36 @@ const ui = () => {
         taskCatIcon.src = icon;
         iconContainer.appendChild(taskCatIcon);
 
-       renderNavOption('All tasks');
-       lists().display(userLists);
-       addPageListeners();
+        tasks().getAllTasks(userLists);
+        lists().display(userLists);
+        renderNavOption('All tasks');
+        tasks().display(allTasks);
+        addPageListeners();
     }
 
     const addPageListeners = () => {
         const createTaskButton = document.getElementById('createTaskButton');
         const addListButton = document.getElementById('addListButton');
-        const navOptions = document.querySelectorAll('[data-navOption]');
+        const navAll = document.querySelector('[data-all]');
+        const navToday = document.querySelector('[data-today]');
+        const navWeek = document.querySelector('[data-week]');
         
         createTaskButton.addEventListener('click', initEditorClone);
         addListButton.addEventListener('click', initListClone);
-        navOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                const navOption = (navLists.find( ({title}) => title === option.dataset.navoption)).title;
-                renderNavOption(navOption);
-            });
-        }); 
+        navAll.addEventListener('click', () => {
+            renderNavOption('All tasks');
+            tasks().display(allTasks);
+        });
+        navToday.addEventListener('click', () => {
+            const todayTasks = tasks().getTodayTasks(allTasks);
+            renderNavOption('Today');
+            tasks().display(todayTasks);
+        });
+        navWeek.addEventListener('click', () => {
+            const weekTasks = tasks().getWeekTasks(allTasks);
+            renderNavOption('This week');
+            tasks().display(weekTasks);
+        });
     }
 
     const setPlaceholder = (element) => {
@@ -222,7 +232,7 @@ const ui = () => {
         });
     }
 
-    return { initPage, initEditorClone, renderUserList, setPlaceholder, }
+    return { initPage, initEditorClone, renderUserList, renderNavOption, setPlaceholder, }
 }
 
 export { ui }

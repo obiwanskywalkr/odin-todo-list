@@ -1,4 +1,6 @@
 import { editor } from "./editor"
+import { allTasks } from "./data"
+import { parseISO, isBefore, endOfToday, endOfWeek } from 'date-fns'
 
 const Task = (title, priority, dueDate, list, subtasks, notes, completed, taskID) => {
 
@@ -6,13 +8,12 @@ const Task = (title, priority, dueDate, list, subtasks, notes, completed, taskID
 }
 
 const tasks = () => {
-// handleQuickAdd needs refactored with task/list array parameter
 // Add mark as complete functionality
 
     const display = (taskArray) => {
         const taskContainer = document.getElementById('taskContainer');
         taskContainer.innerHTML = '';
-    
+
         taskArray.forEach(task => {
             const taskTemplate = document.getElementById('task-template');
             const taskClone = document.importNode(taskTemplate.content, true);
@@ -24,81 +25,122 @@ const tasks = () => {
             tasks[index].textContent = task.title;
             tasks[index].dataset.task = task.taskID;
 
-            tasks[index].addEventListener('click', (e) => {
-                const activeTask = getActiveTask(taskArray, e);
-                editor().displayTask(activeTask);
+            tasks[index].addEventListener('click', () => {
+                editor().displayTask(task);
             });
         });
     }
 
-    const handleQuickAdd = (listArray, e) => {
-        e.preventDefault();
-    
+    const handleQuickAdd = (list) => {
         const title = getTitle()
         let taskID;
 
-        if (listArray.length === undefined) {
-            taskID = listArray.tasks.length + 1;
+        if (list.length === undefined) {
+            taskID = list.tasks.length + 1;
         } else {
-            taskID = listArray.length + 1;
+            taskID = list.length + 1;
         }
 
         const newTask = Task(title, '', '', '', [], '', '', taskID);
         
-        if (listArray.tasks === undefined) {
-            listArray.push(newTask);
+        // Added to check if list argument is allTasks or userList       
+        if (list.tasks === undefined) {
+            allTasks.push(newTask);
             quickAddTask.value = '';
-    
-            display(listArray);
+            display(list);
         } else {
-            listArray.tasks.push(newTask);
-            
+            list.tasks.push(newTask);
+            allTasks.push(newTask);
             quickAddTask.value = '';
-    
-            display(listArray.tasks);
+            display(list.tasks);
         }
     }
 
-    const remove = (taskArray, task) => {
+    const handleDelete = (taskArray, task) => {
         const index = taskArray.indexOf(task);
         taskArray.splice(index, 1);
-        resetIDs(taskArray);
-        display(taskArray);
     }
 
     const getTitle = () => {
         const quickAddTask = document.getElementById('quickAddTask');
+        
         return quickAddTask.value;
     }
 
-    const getActiveTask = (taskArray, e) => {
-        if (e.target.id === 'createSubtaskButton') {
-            const currentTaskText = e.target.parentNode.parentNode.firstChild.nextElementSibling.placeholder;
-            const activeTask = taskArray.find( ({title}) => title === currentTaskText);
+    const getActiveTask = (taskArray) => {
+        const taskTitle = document.getElementById('currentTask').placeholder;
+        const activeTask = taskArray.find( ({title}) => title === taskTitle);
 
-            return activeTask
-        } else if (e.target.id === 'deleteTask') {
-            const currentTaskText = e.target.parentNode.previousElementSibling.firstChild.nextElementSibling.placeholder;
-            const activeTask = taskArray.find( ({title}) => title === currentTaskText);
-           
-            return activeTask
-        } else {
-            const elementID = parseInt(e.target.dataset.task);
-            const activeTask = taskArray.find( ({ taskID }) => taskID === elementID);
-    
-            return activeTask
+        return activeTask
+    }
+
+    const getAllTasks = (listArray) => {
+        listArray.forEach(list => {
+            const iterator = list.tasks.values();
+            for (const task of iterator) {
+                allTasks.push(task);
+            }
+        });
+    }
+
+    const getTodayTasks = (taskArray) => {
+        // Change task due date in userList if not working
+
+        let todayTasks = [];
+        for (let i = 0; i < taskArray.length; i++) {
+            const endOfDay = endOfToday();
+            const dueDate = parseISO(taskArray[i].dueDate);
+            if (isBefore(dueDate, endOfDay)) {
+                todayTasks.push(taskArray[i]);
+            }
         }
+        
+        return todayTasks
+
+        // taskArray.forEach(task => {
+        //     const endOfDay = endOfToday();
+        //     const dueDate = parseISO(task.dueDate);
+        //     console.log(dueDate, endOfDay);
+        //     let temp = taskArray.filter(function() {
+        //         return isBefore(dueDate, endOfDay);
+        //     });
+        //     console.log(temp);   
+        // });
+    }
+
+    const getWeekTasks = (taskArray) => {
+        const today = new Date();
+        let weekTasks = [];
+        for (let i = 0; i < taskArray.length; i++) {
+            const endOfThisWeek = endOfWeek(today);
+            const dueDate = parseISO(taskArray[i].dueDate);
+            if (isBefore(dueDate, endOfThisWeek)) {
+                weekTasks.push(taskArray[i]);
+            }
+        }
+    
+        return weekTasks
     }
 
     const resetIDs = (taskArray) => {
-        let i = 1;
-        taskArray.forEach(task => {
-            task.taskID = i;
-            i++
-        })
+        if (taskArray.tasks === undefined) {
+            let i = 1;
+            taskArray.forEach(task => {
+                task.taskID = i;
+                i++
+            });
+        } else {
+            let i = 1;
+            taskArray.tasks.forEach(task => {
+                task.taskID = i;
+                i++
+            });
+        }   
+
+     
     }
 
-    return { display, handleQuickAdd, remove, getActiveTask, }
+    return { display, handleQuickAdd, handleDelete, getActiveTask, getAllTasks, getTodayTasks, getWeekTasks, resetIDs }
 }
 
 export { Task, tasks }
