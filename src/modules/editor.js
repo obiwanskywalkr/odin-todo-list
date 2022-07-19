@@ -1,21 +1,19 @@
-import { ui } from "./ui.js"
+import { ui } from "./ui"
+import { lists } from "./list"
 import { Task, tasks } from "./task"
-import { navLists, userLists } from "./data"
+import { userLists, allTasks } from "./data"
 
 const Subtask = (title, taskID) => {
     return { title, taskID }
 }
 
 const editor = () => {
-// list dropdown options need dynamic creation
-// handleSubtask needs refactored with target task parameter
-
     const displayTask = (task) => {
         ui().initEditorClone();
 
         if (editorCardContainer.contains(document.getElementById('submitTask'))) {
             displayUpdate(task);
-            displayDelete();
+            displayDelete(task);
         }
         
         setTitle(task);
@@ -41,10 +39,11 @@ const editor = () => {
         
         updateTask.addEventListener('click', () => {
             handleUpdate(task);
+            document.getElementById('editorCardContainer').remove();
         });
     }
 
-    const displayDelete = () => {
+    const displayDelete = (task) => {
         const buttonContainer = editorCardContainer.querySelector('.buttonContainer');
         buttonContainer.removeChild(cancelEditor);
 
@@ -54,25 +53,30 @@ const editor = () => {
         deleteTask.textContent = 'Delete Task';
         buttonContainer.prepend(deleteTask);
 
-        deleteTask.addEventListener('click', (e) => {
-            const activeTask = tasks().getActiveTask(navLists[0].tasks, e)
-            tasks().remove(navLists[0].tasks, activeTask);
-            tasks().display(navLists[0].tasks);
-            content.removeChild(editorCardContainer);
+        deleteTask.addEventListener('click', () => {
+            handleDelete(task);
         });
     }
 
     const handleForm = () => {
         const targetList = getTargetList();
-        let taskDestination;
-        (targetList === 'All tasks') ?
-            taskDestination = navLists.find( ({title}) => title = targetList) :
-            taskDestination = userLists.find( ({title}) => title === targetList)
-        
-        const taskID = navLists[0].tasks.length + 1;
-        const newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), '', getNotes(), '', taskID)
-        
-        taskDestination.tasks.push(newTask);
+
+        if (targetList === 'All tasks') {
+            const taskID = allTasks.length + 1;
+            const newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), '', getNotes(), '', taskID)
+            
+            allTasks.push(newTask);
+            ui().renderNavOption('All tasks');
+            tasks().display(allTasks);
+        } else {
+            const taskID = allTasks.length + 1;
+            const newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), '', getNotes(), '', taskID)
+            
+            const taskDestination = userLists.find( ({title}) => title === targetList);
+            taskDestination.tasks.push(newTask);
+            allTasks.push(newTask);
+            ui().renderUserList(taskDestination);
+        }
     }
 
     const handleUpdate = (task) => {
@@ -91,7 +95,24 @@ const editor = () => {
         const notes = getNotes();
         task.notes = notes;
 
-        tasks().display(navLists[0].tasks);
+        tasks().display(allTasks);
+    }
+
+    const handleDelete = (task) => {
+        if (document.getElementById('listTitle').value === 'All tasks') {
+            tasks().handleDelete(allTasks, task);
+            tasks().resetIDs(allTasks);
+            tasks().display(allTasks);
+        } else {
+            const activeList = lists().getActiveList();
+            tasks().handleDelete(activeList.tasks, task);
+            tasks().handleDelete(allTasks, task);
+            tasks().resetIDs(activeList);
+            tasks().resetIDs(allTasks);
+            tasks().display(activeList.tasks);
+        }
+
+        content.removeChild(editorCardContainer);
     }
 
     const getTitle = () => {

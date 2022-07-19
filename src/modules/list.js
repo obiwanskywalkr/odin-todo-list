@@ -1,5 +1,7 @@
 import deleteButton from '/src/img/delete.png';
 import { ui } from './ui';
+import { tasks } from './task'
+import { userLists } from './data';
 
 const List = (title, description, tasks, listID) => {
 
@@ -22,15 +24,15 @@ const lists = () => {
 
             lists[index].textContent = list.title;
             lists[index].dataset.list = list.listID;
-            lists[index].addEventListener('click', (e) => {
-                const activeList = getActiveList(listArray, e);
-                ui().renderUserList(activeList);
+            lists[index].addEventListener('click', () => {
+                ui().renderUserList(list);
             });
 
             deleteIcons[index].src = deleteButton;
-            deleteIcons[index].addEventListener('click', (e) => {
-                const activeList = getActiveList(listArray, e);
-                remove(listArray, activeList);
+            deleteIcons[index].addEventListener('click', () => {
+                handleDelete(listArray, list);
+                resetIDs(listArray);
+                display(listArray);
             });
         });
     }
@@ -40,16 +42,13 @@ const lists = () => {
         const newList = List(getTitleFromInput(), getDescriptionFromInput(), [], listID);
         
         listArray.push(newList);
-        display(listArray);
 
         return newList
     }
 
-    const remove = (listArray, list) => {
+    const handleDelete = (listArray, list) => {
         const index = listArray.indexOf(list);
         listArray.splice(index, 1);
-        resetIDs(listArray);
-        display(listArray);
     }
 
     const getTitleFromInput = () => {
@@ -77,22 +76,12 @@ const lists = () => {
         
         list.description = description;
     }
-
-    const getActiveList = (listArray, e) => {
-        if (e.target.dataset.list === undefined) {
-            const target = e.currentTarget;
-            const sibling = target.previousElementSibling;
-
-            const elementID = parseInt(sibling.dataset.list);
-            const activeList = listArray.find( ({ listID }) => listID === elementID);
-
-            return activeList
-        } else {
-            const elementID = parseInt(e.target.dataset.list);
-            const activeList = listArray.find( ({ listID }) => listID === elementID);
-            
-            return activeList
-        } 
+    
+    const getActiveList = () => {
+        const listTitle = document.getElementById('listTitle').value;
+        const activeList = userLists.find( ({title}) => title === listTitle);
+        
+        return activeList
     }
 
     const resetIDs = (listArray) => {
