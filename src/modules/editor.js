@@ -3,8 +3,8 @@ import { lists } from "./list"
 import { Task, tasks } from "./task"
 import { userLists, allTasks } from "./data"
 
-const Subtask = (title, taskID) => {
-    return { title, taskID }
+const Subtask = (title, completed, taskID) => {
+    return { title, completed, taskID }
 }
 
 const editor = () => {
@@ -63,14 +63,14 @@ const editor = () => {
 
         if (targetList === 'All tasks') {
             const taskID = allTasks.length + 1;
-            const newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), '', getNotes(), '', taskID)
+            const newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), '', getNotes(), '', taskID);
             
             allTasks.push(newTask);
             ui().renderNavOption('All tasks');
             tasks().display(allTasks);
         } else {
             const taskID = allTasks.length + 1;
-            const newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), '', getNotes(), '', taskID)
+            const newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), '', getNotes(), '', taskID);
             
             const taskDestination = userLists.find( ({title}) => title === targetList);
             taskDestination.tasks.push(newTask);
@@ -100,13 +100,17 @@ const editor = () => {
 
     const handleDelete = (task) => {
         if (document.getElementById('listTitle').value === 'All tasks') {
-            tasks().handleDelete(allTasks, task);
+            if (task.list === '') {
+                tasks().handleDelete(allTasks, task);
+            } else {
+                const activeList = userLists.find( ({ title }) => title === task.list);
+                tasks().handleDelete(activeList.tasks, task);
+            }
             tasks().resetIDs(allTasks);
             tasks().display(allTasks);
         } else {
             const activeList = lists().getActiveList();
             tasks().handleDelete(activeList.tasks, task);
-            tasks().handleDelete(allTasks, task);
             tasks().resetIDs(activeList);
             tasks().resetIDs(allTasks);
             tasks().display(activeList.tasks);
@@ -133,7 +137,7 @@ const editor = () => {
 
     const getPriority = () => {
         const priorities = Array.from(document.querySelectorAll('[data-priority]'));
-        const activePriority = priorities.find( ({ classList }) => classList.contains('clicked'))
+        const activePriority = priorities.find( ({ classList }) => classList.contains('clicked'));
 
         if (activePriority === undefined) return
 
@@ -146,7 +150,7 @@ const editor = () => {
         const priorities = Array.from(document.querySelectorAll('[data-priority]'));
         priorities.forEach(priority => {
             priority.classList.remove('clicked');
-        })
+        });
 
         const priority = task.priority;
         if (priority === '') {
@@ -198,7 +202,7 @@ const editor = () => {
         subtasks[index].addEventListener('focusout', () => {
             if (subtasks[index].value === '') return
 
-            const newSubtask = Subtask(subtasks[index].value, task.subtasks.length + 1);
+            const newSubtask = Subtask(subtasks[index].value, false, task.subtasks.length + 1);
             task.subtasks.push(newSubtask);
         });
     }
@@ -216,10 +220,27 @@ const editor = () => {
             subtaskContainer.appendChild(subtaskClone);
 
             const subtasks = Array.from(document.querySelectorAll('[data-subtask]'));
+            const checks = Array.from(document.querySelectorAll('[data-check'));
             const index = currentSubtasks.indexOf(subtask);
 
+            if (subtask.completed === true) {
+                checks[index].checked = true;
+            }
+
             subtasks[index].value = subtask.title;
-        })
+
+            checks[index].addEventListener('click', () => {
+                handleCompleted(subtask);
+            });
+        });
+    }
+
+    const handleCompleted = (subtask) => {
+        if (subtask.completed === true) {
+            subtask.completed = false;
+        } else {
+            subtask.completed = true;
+        }
     }
 
     const getNotes = () => {
@@ -247,7 +268,7 @@ const editor = () => {
             option.value = list.title;
             option.textContent = list.title;
             listDropdown.appendChild(option);
-        })
+        });
     }
 
     return { displayTask, handleForm, getTargetList, handleSubtask, initListDropdown }

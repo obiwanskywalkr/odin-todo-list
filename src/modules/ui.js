@@ -1,9 +1,9 @@
 import '/src/style.css';
 import icon from '/src/img/icon-cat.png';
-import { lists } from "./list.js";
-import { tasks } from "./task.js";
-import { editor } from "./editor.js"
-import { userLists, allTasks } from "./data.js";
+import { lists } from "./list";
+import { tasks } from "./task";
+import { editor } from "./editor";
+import { userLists, allTasks } from "./data";
 
 const ui = () => {
     const initListClone = () => {
@@ -136,7 +136,7 @@ const ui = () => {
 
         cancelEditor.addEventListener('click', (e) => {
             content.removeChild(editorCardContainer);
-        })
+        });
     }
 
     const renderNavOption = (title) => {
@@ -148,7 +148,7 @@ const ui = () => {
         todoCardContainer.removeChild(listDescription);
 
         submitQuickAdd.addEventListener('click', () => {
-            tasks().handleQuickAdd(allTasks)
+            tasks().handleQuickAdd(allTasks);
         });
     }
 
@@ -177,6 +177,16 @@ const ui = () => {
                 tasks().handleQuickAdd(list);
             });
         }
+    }
+
+    const renderMessage = (message) => {
+        const taskContainer = document.getElementById('taskContainer');
+        taskContainer.innerHTML = '';
+
+        const div = document.createElement('div');
+        div.textContent = message;
+        div.classList.add('message');
+        taskContainer.appendChild(div);
     }
 
     const initPage = () => {
@@ -208,12 +218,20 @@ const ui = () => {
         navToday.addEventListener('click', () => {
             const todayTasks = tasks().getTodayTasks(allTasks);
             renderNavOption('Today');
-            tasks().display(todayTasks);
+            if (todayTasks.length === 0) {
+                ui().renderMessage(`You're all caught up!`);
+            } else {
+                tasks().display(todayTasks);
+            }
         });
         navWeek.addEventListener('click', () => {
             const weekTasks = tasks().getWeekTasks(allTasks);
             renderNavOption('This week');
-            tasks().display(weekTasks);
+            if (weekTasks.length === 0) {
+                ui().renderMessage(`You're all caught up!`);
+            } else {
+                tasks().display(weekTasks);
+            }
         });
     }
 
@@ -232,7 +250,7 @@ const ui = () => {
         });
     }
 
-    return { initPage, initEditorClone, renderUserList, renderNavOption, setPlaceholder, }
+    return { initPage, initEditorClone, renderUserList, renderNavOption, renderMessage, setPlaceholder, }
 }
 
 export { ui }

@@ -1,10 +1,8 @@
 import deleteButton from '/src/img/delete.png';
 import { ui } from './ui';
-import { tasks } from './task'
-import { userLists } from './data';
+import { userLists, updateLocalStorage } from './data';
 
 const List = (title, description, tasks, listID) => {
-
     return { title, description, tasks, listID }
 }
 
