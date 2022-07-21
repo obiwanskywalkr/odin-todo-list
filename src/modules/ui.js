@@ -3,7 +3,7 @@ import icon from '/src/img/icon-cat.png';
 import { lists } from "./list";
 import { tasks } from "./task";
 import { editor } from "./editor";
-import { userLists, allTasks } from "./data";
+import { userLists, allTasks, getLocalStorage } from "./data";
 
 const ui = () => {
     const initListClone = () => {
@@ -126,6 +126,7 @@ const ui = () => {
 
         createSubtaskButton.addEventListener('click', (e) => {
             const activeTask = tasks().getActiveTask(allTasks, e);
+            let inde
             editor().handleSubtask(activeTask);
         });
 

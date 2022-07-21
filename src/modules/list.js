@@ -41,12 +41,16 @@ const lists = () => {
         
         listArray.push(newList);
 
+        updateLocalStorage();
+
         return newList
     }
 
     const handleDelete = (listArray, list) => {
         const index = listArray.indexOf(list);
         listArray.splice(index, 1);
+
+        updateLocalStorage();
     }
 
     const getTitleFromInput = () => {
@@ -65,6 +69,8 @@ const lists = () => {
         if (title === '') return
         
         list.title = title;
+
+        updateLocalStorage();
     }
 
     const updateDescription = (list) => {
@@ -73,6 +79,8 @@ const lists = () => {
         if (description === '') return
         
         list.description = description;
+
+        updateLocalStorage();
     }
     
     const getActiveList = () => {

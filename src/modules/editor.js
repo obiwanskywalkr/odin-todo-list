@@ -1,7 +1,7 @@
 import { ui } from "./ui"
 import { lists } from "./list"
 import { Task, tasks } from "./task"
-import { userLists, allTasks } from "./data"
+import { userLists, allTasks, updateLocalStorage } from "./data"
 
 const Subtask = (title, completed, taskID) => {
     return { title, completed, taskID }
@@ -60,23 +60,28 @@ const editor = () => {
 
     const handleForm = () => {
         const targetList = getTargetList();
+        let newTask;
 
         if (targetList === 'All tasks') {
             const taskID = allTasks.length + 1;
-            const newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), '', getNotes(), '', taskID);
+            newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), getSubtasks(), getNotes(), false, taskID);
             
             allTasks.push(newTask);
             ui().renderNavOption('All tasks');
             tasks().display(allTasks);
         } else {
             const taskID = allTasks.length + 1;
-            const newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), '', getNotes(), '', taskID);
+            newTask = Task(getTitle(), getPriority(), getDueDate(), getTargetList(), getSubtasks(), getNotes(), false, taskID);
             
             const taskDestination = userLists.find( ({title}) => title === targetList);
             taskDestination.tasks.push(newTask);
             allTasks.push(newTask);
             ui().renderUserList(taskDestination);
         }
+
+        updateLocalStorage();
+
+        return newTask
     }
 
     const handleUpdate = (task) => {
@@ -96,11 +101,13 @@ const editor = () => {
         task.notes = notes;
 
         tasks().display(allTasks);
+
+        updateLocalStorage();
     }
 
     const handleDelete = (task) => {
         if (document.getElementById('listTitle').value === 'All tasks') {
-            if (task.list === '') {
+            if (task.list === 'All tasks') {
                 tasks().handleDelete(allTasks, task);
             } else {
                 const activeList = userLists.find( ({ title }) => title === task.list);
@@ -117,6 +124,7 @@ const editor = () => {
         }
 
         content.removeChild(editorCardContainer);
+        updateLocalStorage();
     }
 
     const getTitle = () => {
@@ -195,16 +203,22 @@ const editor = () => {
         subtaskContainer.appendChild(subtaskClone);
 
         const subtasks = Array.from(document.querySelectorAll('[data-subtask]'));
-        const index = task.subtasks.length;
+        let index;
 
-        subtasks[index].focus();
+        if (task === undefined) {
+            index = 0;
+        } else {
+            index = task.subtasks.length;
+        }
 
-        subtasks[index].addEventListener('focusout', () => {
-            if (subtasks[index].value === '') return
+        // subtasks[index].focus();
 
-            const newSubtask = Subtask(subtasks[index].value, false, task.subtasks.length + 1);
-            task.subtasks.push(newSubtask);
-        });
+        // subtasks[index].addEventListener('focusout', () => {
+        //     if (subtasks[index].value === '') return
+
+        //     const newSubtask = Subtask(subtasks[index].value, false, index + 1);
+        //     task.subtasks.push(newSubtask);
+        // });
     }
 
     const displaySubtask = (task) => {
@@ -235,12 +249,27 @@ const editor = () => {
         });
     }
 
+    const getSubtasks = () => {
+        const subtasks = Array.from(document.querySelectorAll('[data-subtask]'));
+        const subtaskArray = [];
+        const index = 0
+
+        subtasks.forEach(subtask => {
+            const newSubtask = Subtask(subtask.value, false, index + 1)
+            subtaskArray.push(newSubtask);
+        });
+
+        return subtaskArray;
+    }
+
     const handleCompleted = (subtask) => {
         if (subtask.completed === true) {
             subtask.completed = false;
         } else {
             subtask.completed = true;
         }
+
+        updateLocalStorage();
     }
 
     const getNotes = () => {

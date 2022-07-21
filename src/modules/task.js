@@ -69,6 +69,8 @@ const tasks = () => {
             quickAddTask.value = '';
             display(list.tasks);
         }
+
+        updateLocalStorage()
     }
 
     const handleDelete = (taskArray, task) => {
@@ -78,6 +80,8 @@ const tasks = () => {
 
         taskArray.splice(arrayIndex, 1);
         allTasks.splice(allTasksIndex, 1);
+
+        updateLocalStorage();
     }
 
     const handleCompleted = (task, taskElement) => {
@@ -88,6 +92,8 @@ const tasks = () => {
             task.completed = true;
             taskElement.classList.add('completed');
         }
+
+        updateLocalStorage();
     }
 
     const getTitle = () => {
