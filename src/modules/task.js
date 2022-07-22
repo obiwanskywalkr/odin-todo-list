@@ -1,7 +1,7 @@
-import { ui } from "./ui"
-import { lists } from "./list"
-import { editor } from "./editor"
-import { allTasks, updateLocalStorage } from "./data"
+import { ui } from './ui'
+import { lists } from './list'
+import { editor } from './editor'
+import { allTasks, updateLocalStorage } from './data'
 import { parseISO, isBefore, endOfToday, endOfWeek } from 'date-fns'
 
 const Task = (title, priority, dueDate, list, subtasks, notes, completed, taskID) => {
