@@ -1,18 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@font-face {
+    font-family: 'Roboto';
+    src: url('./font/Roboto-Regular.ttf') format('ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('./font/Roboto-Bold.ttf') format('ttf');
+    font-weight: 700;
+    font-style: normal;
+}
 
 :root {
     --primary-dark: #1f2937;
     --primary-light: #f9fafb;
     --accent-secondary: #e5e7eb;
     --accent-main: #0ea5e9;
-    font-family: "Roboto", sans-serif;
-    font-size: clamp(1rem, calc(0.5rem + 0.5vw), 1.75rem);
 }
 
 * {
     margin: 0;
     padding: 0;
     outline: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(1rem, calc(0.5rem + 0.5vw), 1.75rem);
     color: var(--primary-dark);
 }
 
@@ -37,7 +49,7 @@ h4 {
 
 header {
     cursor: default;
-    height: 2rem;
+    height: 1.5rem;
     border-bottom: 2px solid var(--accent-secondary);
     padding: 2rem 3rem;
     display: flex;
@@ -48,9 +60,13 @@ header {
 footer {
     height: 2rem;
     border-top: 2px solid var(--accent-secondary);
-    padding-top: 0.75rem;
-    text-align: center;
+    padding: 0.5rem 0 0.5rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
 }
+
 
 /* Body styling */
 #main {
@@ -142,9 +158,23 @@ footer {
     font-size: 1rem;
 }
 
+.linkBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .75rem;
+}
+
+#githubIconContainer {
+    transition: .25s;
+}
+
+#githubIconContainer:hover {
+    transform: scale(1.2);
+}
+
 
 /* TaskCard styling */
-
 #todoCardContainer,
 #listCardContainer {
     max-width: 25rem;
@@ -263,6 +293,7 @@ footer {
     border-top-left-radius: 1rem;
     border-bottom-left-radius: 1rem;
     padding: 0 1rem;
+    font-size: .75rem;
 }
 
 #submitQuickAdd {
@@ -273,6 +304,7 @@ footer {
     border-top-right-radius: 1rem;
     border-bottom-right-radius: 1rem;
     background-color: var(--accent-main);
+    font-size: .75rem;
     transition: .25s;
 }
 

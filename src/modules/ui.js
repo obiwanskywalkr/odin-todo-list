@@ -1,9 +1,10 @@
-import '/src/style.css';
-import icon from '/src/img/icon-cat.png';
-import { lists } from "./list";
-import { tasks } from "./task";
-import { editor } from "./editor";
-import { userLists, allTasks, getLocalStorage } from "./data";
+import '/src/style.css'
+import taskCatIcon from '/src/img/icon-cat.png'
+import githubIcon from '/src/img/github-icon.png'
+import { lists } from './list'
+import { tasks } from './task'
+import { editor } from './editor'
+import { userLists, allTasks } from './data'
 
 const ui = () => {
     const initListClone = () => {
@@ -191,10 +192,15 @@ const ui = () => {
     }
 
     const initPage = () => {
-        const iconContainer = document.getElementById('iconContainer');
-        const taskCatIcon = new Image(60, 60);
-        taskCatIcon.src = icon;
-        iconContainer.appendChild(taskCatIcon);
+        const taskCatIconContainer = document.getElementById('taskCatIconContainer');
+        const taskCatImage = new Image(60, 60);
+        taskCatImage.src = taskCatIcon;
+        taskCatIconContainer.appendChild(taskCatImage);
+
+        const githubIconContainer = document.getElementById('githubIconContainer');
+        const githubImage = new Image(25, 25);
+        githubImage.src = githubIcon;
+        githubIconContainer.appendChild(githubImage);
 
         tasks().getAllTasks(userLists);
         lists().display(userLists);

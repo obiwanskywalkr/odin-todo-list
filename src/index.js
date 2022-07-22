@@ -1,5 +1,5 @@
-import './style.css';
-import { ui } from './modules/ui.js';
+import './style.css'
+import { ui } from './modules/ui.js'
 
 window.onload = () => {
     ui().initPage();

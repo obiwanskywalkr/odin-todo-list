@@ -1,7 +1,7 @@
-import { ui } from "./ui"
-import { lists } from "./list"
-import { Task, tasks } from "./task"
-import { userLists, allTasks, updateLocalStorage } from "./data"
+import { ui } from './ui'
+import { lists } from './list'
+import { Task, tasks } from './task'
+import { userLists, allTasks, updateLocalStorage } from './data'
 
 const Subtask = (title, completed, taskID) => {
     return { title, completed, taskID }
