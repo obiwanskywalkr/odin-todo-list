@@ -1,6 +1,7 @@
 import '/src/style.css'
 import taskCatIcon from '/src/img/icon-cat.png'
 import githubIcon from '/src/img/github-icon.png'
+import menu from '/src/img/menu.png'
 import { lists } from './list'
 import { tasks } from './task'
 import { editor } from './editor'
@@ -62,6 +63,8 @@ const ui = () => {
         const listTitle = document.getElementById('listTitle');
         const listDescription = document.getElementById('listDescription');
         const submitQuickAdd = document.getElementById('submitQuickAdd');
+
+        createMenu();
 
         return { todoCardContainer, listTitle, listDescription, submitQuickAdd }
     }
@@ -127,7 +130,6 @@ const ui = () => {
 
         createSubtaskButton.addEventListener('click', (e) => {
             const activeTask = tasks().getActiveTask(allTasks, e);
-            let inde
             editor().handleSubtask(activeTask);
         });
 
@@ -240,6 +242,35 @@ const ui = () => {
                 tasks().display(weekTasks);
             }
         });
+    }
+
+    const createMenu = () => {
+        const menuContainer = document.getElementById('menuContainer');
+        const menuBox = document.getElementById('menuBox');
+        const clearCompleted = document.getElementById('clearCompleted');
+        const menuImage = new Image(25, 25);
+        menuImage.src = menu;
+        menuContainer.prepend(menuImage);
+
+        menuImage.addEventListener('click', () => {
+            menuBox.classList.remove('hidden');
+        });
+
+        menuBox.addEventListener('mouseleave', () => {
+            menuBox.classList.add('hidden');
+        })
+
+        clearCompleted.addEventListener('click', () => {
+            const activeList = lists().getActiveList();
+            if (activeList === undefined) {
+                tasks().clearCompleted(allTasks);
+                tasks().display(allTasks);
+            } else {
+                tasks().clearCompleted(activeList.tasks);
+                tasks().clearCompleted(allTasks);
+                tasks().display(activeList.tasks);
+            }
+        })
     }
 
     const setPlaceholder = (element) => {

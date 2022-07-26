@@ -147,6 +147,17 @@ const tasks = () => {
         return weekTasks
     }
 
+    const clearCompleted = (taskArray) => {
+        taskArray.forEach(task => {
+            if (task.completed === true) {
+                const index = taskArray.indexOf(task);
+                taskArray.splice(index, 1);
+            }
+        });
+        
+        updateLocalStorage();
+    }
+
     const resetIDs = (taskArray) => {
         if (taskArray.tasks === undefined) {
             let i = 1;
@@ -163,7 +174,7 @@ const tasks = () => {
         }
     }
 
-    return { display, handleQuickAdd, handleDelete, getActiveTask, getAllTasks, getTodayTasks, getWeekTasks, resetIDs }
+    return { display, handleQuickAdd, handleDelete, getActiveTask, getAllTasks, getTodayTasks, getWeekTasks, clearCompleted, resetIDs }
 }
 
 export { Task, tasks }

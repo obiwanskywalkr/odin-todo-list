@@ -174,7 +174,7 @@ footer {
 }
 
 
-/* TaskCard styling */
+/* TodoCard styling */
 #todoCardContainer,
 #listCardContainer {
     max-width: 25rem;
@@ -185,6 +185,46 @@ footer {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+}
+
+#todoHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#menuContainer {
+    cursor: pointer;
+    position: relative;
+    float: right;
+}
+
+#menuBox {
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    width: max-content;
+    padding: .75rem;
+    border: 2px solid var(--accent-secondary);
+    border-radius: .5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#clearCompleted {
+    cursor: pointer;
+    border: none;
+    background-color: var(--primary-light);
+    font-size: .9rem;
+}
+
+#clearCompleted:hover {
+    transform: scale(1.05);
+}
+
+.hidden {
+    visibility: hidden;
 }
 
 .listInfo {
