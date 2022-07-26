@@ -37,7 +37,14 @@
 
 <template id="todoCard-template">
     <div id="todoCardContainer">
-        <input type="text" id="listTitle" class="listInfo"></input>
+        <div id="todoHeader">
+            <input type="text" id="listTitle" class="listInfo"></input>
+            <div id="menuContainer">
+                <div id="menuBox" class="hidden">
+                    <button id="clearCompleted">Clear completed tasks</button>
+                </div>
+            </div>
+        </div>
         <input type="text" id="listDescription" class="listInfo"></input>
         <div id="taskContainer"></div>
         <div id="quickAddBar">
